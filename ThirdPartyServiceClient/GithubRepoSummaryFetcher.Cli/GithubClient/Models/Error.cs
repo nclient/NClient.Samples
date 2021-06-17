@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace GithubRepoSummaryFetcher.Cli.Models
+namespace GithubRepoSummaryFetcher.Cli.GithubClient.Models
 {
     public class Error
     {

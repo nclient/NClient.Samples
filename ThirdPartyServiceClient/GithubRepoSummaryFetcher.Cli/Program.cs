@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using GithubRepoSummaryFetcher.Cli.Models;
+using GithubRepoSummaryFetcher.Cli.GithubClient;
+using GithubRepoSummaryFetcher.Cli.GithubClient.Models;
 using NClient;
 using NClient.Abstractions.HttpClients;
-using NClient.Extensions;
 using Polly;
 
 namespace GithubRepoSummaryFetcher.Cli
@@ -19,10 +19,10 @@ namespace GithubRepoSummaryFetcher.Cli
             var retryPolicy = Policy
                 .HandleResult<HttpResponse>(x => !x.IsSuccessful && x.StatusCode != HttpStatusCode.NotFound)
                 .Or<Exception>()
-                .WaitAndRetryAsync(retryCount: 3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .WaitAndRetryAsync(retryCount: 2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             GithubRepositoryClient = NClientProvider
-                .Use<IGithubRepositoryClient>(host: "https://api.github.com/")
+                .Use<IGithubRepositoryClient>(host: "https://api.github.com")
                 .WithResiliencePolicy(retryPolicy)
                 .Build();
         }

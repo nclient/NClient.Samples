@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 #nullable disable
 
-namespace GithubRepoSummaryFetcher.Cli.Models
+namespace GithubRepoSummaryFetcher.Cli.GithubClient.Models
 {
     public class RepositorySummary
     {

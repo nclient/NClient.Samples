@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CurrenciesMonitoring.Worker.CoinbaseClients.Models
+namespace CurrenciesMonitoring.Worker.CoinbaseClient.Models
 {
     public class Currency
     {

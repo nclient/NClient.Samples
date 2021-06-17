@@ -1,18 +1,18 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CurrenciesMonitoring.Worker.CoinbaseClients;
+using CurrenciesMonitoring.Worker.CoinbaseClient;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace CurrenciesMonitoring.Worker
 {
-    public class Fetcher : BackgroundService
+    public class Worker : BackgroundService
     {
         private readonly ICoinbaseCurrenciesClient _coinbaseCurrenciesClient;
-        private readonly ILogger<Fetcher> _logger;
+        private readonly ILogger<Worker> _logger;
 
-        public Fetcher(ICoinbaseCurrenciesClient coinbaseCurrenciesClient, ILogger<Fetcher> logger)
+        public Worker(ICoinbaseCurrenciesClient coinbaseCurrenciesClient, ILogger<Worker> logger)
         {
             _coinbaseCurrenciesClient = coinbaseCurrenciesClient;
             _logger = logger;

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using CurrenciesMonitoring.Worker.CoinbaseClients.Models;
+using CurrenciesMonitoring.Worker.CoinbaseClient.Models;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 
-namespace CurrenciesMonitoring.Worker.CoinbaseClients
+namespace CurrenciesMonitoring.Worker.CoinbaseClient
 {
     [Path("v2/currencies")]
     public interface ICoinbaseCurrenciesClient

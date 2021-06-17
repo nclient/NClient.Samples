@@ -1,5 +1,5 @@
 using System;
-using CurrenciesMonitoring.Worker.CoinbaseClients;
+using CurrenciesMonitoring.Worker.CoinbaseClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NClient;
@@ -21,7 +21,7 @@ namespace CurrenciesMonitoring.Worker
             return Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Fetcher>()
+                    services.AddHostedService<Worker>()
                         .AddLogging()
                         .AddHttpClient(nameof(ICoinbaseCurrenciesClient));
                     
