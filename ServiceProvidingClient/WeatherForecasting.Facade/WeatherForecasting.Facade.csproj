@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFrameworks>net462;net5.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NClient" Version="0.6.0" />
+        <PackageReference Include="NClient.Annotations" Version="0.6.0" />
     </ItemGroup>
 
 </Project>
