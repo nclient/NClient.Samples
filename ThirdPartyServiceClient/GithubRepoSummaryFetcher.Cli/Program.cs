@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using GithubRepoSummaryFetcher.Cli.GithubClient;
 using GithubRepoSummaryFetcher.Cli.GithubClient.Models;
 using NClient;
-using NClient.Abstractions.HttpClients;
-using Polly;
 
 namespace GithubRepoSummaryFetcher.Cli
 {
@@ -16,14 +14,11 @@ namespace GithubRepoSummaryFetcher.Cli
 
         static Program()
         {
-            var retryPolicy = Policy
-                .HandleResult<HttpResponse>(x => !x.IsSuccessful && x.StatusCode != HttpStatusCode.NotFound)
-                .Or<Exception>()
-                .WaitAndRetryAsync(retryCount: 2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
             GithubRepositoryClient = NClientProvider
                 .Use<IGithubRepositoryClient>(host: "https://api.github.com")
-                .WithResiliencePolicy(retryPolicy)
+                .WithResiliencePolicy(
+                    retryCount: 2,
+                    resultPredicate: x => !x.HttpResponse.IsSuccessful && x.HttpResponse.StatusCode != HttpStatusCode.NotFound)
                 .Build();
         }
         
