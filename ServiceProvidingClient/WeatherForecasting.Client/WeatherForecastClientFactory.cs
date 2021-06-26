@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NClient;
 using NClient.Abstractions;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using Polly;
 
 namespace WeatherForecasting.Client
@@ -19,15 +19,18 @@ namespace WeatherForecasting.Client
         public WeatherForecastClientFactory(
             IHttpClientFactory httpClientFactory,
             string? httpClientName = null,
-            IAsyncPolicy<HttpResponse>? resiliencePolicy = null, 
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null, 
             ILoggerFactory? loggerFactory = null)
         {
-            _clientFactory = new NClientFactory(
-                httpClientFactory,
-                httpClientName,
-                jsonSerializerOptions: null,
-                resiliencePolicy,
-                loggerFactory);
+            var nclientFactoryBuilder = new NClientFactoryBuilder()
+                .WithCustomHttpClient(httpClientFactory, httpClientName)
+                .WithResiliencePolicyForIdempotentMethods();
+            if (resiliencePolicy is not null)
+                nclientFactoryBuilder.WithResiliencePolicy(resiliencePolicy);
+            if (loggerFactory is not null)
+                nclientFactoryBuilder.WithLogging(loggerFactory);
+            
+            _clientFactory = nclientFactoryBuilder.Build();
         }
 
         public IWeatherForecastClient Create()

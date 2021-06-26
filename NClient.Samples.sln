@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecasting.Facade",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecasting.Client", "ServiceProvidingClient\WeatherForecasting.Client\WeatherForecasting.Client.csproj", "{23ACD360-8DD0-46A5-AC57-0DE21622728D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecastingConsumer", "ServiceProvidingClient\WeatherForecastingConsumer\WeatherForecastingConsumer.csproj", "{88DA88A4-0438-4AF6-BBEB-C2F55582FA1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherForecasting.Consumer", "ServiceProvidingClient\WeatherForecasting.Consumer\WeatherForecasting.Consumer.csproj", "{88DA88A4-0438-4AF6-BBEB-C2F55582FA1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceUsingClient", "ServiceUsingClient", "{F411414D-9197-49C1-8A16-714659BBC259}"
 EndProject

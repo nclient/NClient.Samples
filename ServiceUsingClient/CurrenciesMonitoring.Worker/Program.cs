@@ -1,11 +1,8 @@
-using System;
 using CurrenciesMonitoring.Worker.CoinbaseClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NClient;
-using NClient.Abstractions.HttpClients;
 using NClient.Extensions.DependencyInjection;
-using Polly;
 
 namespace CurrenciesMonitoring.Worker
 {
@@ -25,14 +22,9 @@ namespace CurrenciesMonitoring.Worker
                         .AddLogging()
                         .AddHttpClient(nameof(ICoinbaseCurrenciesClient));
                     
-                    var retryPolicy = Policy
-                        .HandleResult<HttpResponse>(x => !x.IsSuccessful)
-                        .Or<Exception>()
-                        .WaitAndRetryAsync(retryCount: 2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
                     services.AddNClient<ICoinbaseCurrenciesClient>(
                         host: "https://api.coinbase.com", 
-                        configure: x => x.WithResiliencePolicy(retryPolicy),
+                        configure: x => x.WithResiliencePolicy(retryCount: 2),
                         httpClientName: nameof(ICoinbaseCurrenciesClient));
                 });
         }

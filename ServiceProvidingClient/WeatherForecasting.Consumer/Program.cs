@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using NClient;
 using WeatherForecasting.Client;
 
-namespace WeatherForecastingConsumer
+namespace WeatherForecasting.Consumer
 {
     internal static class Program
     {
