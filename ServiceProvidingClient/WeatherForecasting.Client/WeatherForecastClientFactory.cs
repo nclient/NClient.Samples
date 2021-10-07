@@ -1,8 +1,12 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using NClient;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
+using NClient.Providers.HttpClient.System;
+using NClient.Providers.Resilience.Polly;
+using NClient.Providers.Serialization.System;
 using Polly;
 
 namespace WeatherForecasting.Client
@@ -19,14 +23,18 @@ namespace WeatherForecasting.Client
         public WeatherForecastClientFactory(
             IHttpClientFactory httpClientFactory,
             string? httpClientName = null,
-            IAsyncPolicy<ResponseContext>? resiliencePolicy = null, 
+            IAsyncPolicy<IResponseContext<HttpRequestMessage, HttpResponseMessage>>? resiliencePolicy = null, 
             ILoggerFactory? loggerFactory = null)
         {
-            var nclientFactoryBuilder = new NClientFactoryBuilder()
-                .WithCustomHttpClient(httpClientFactory, httpClientName)
-                .WithResiliencePolicyForIdempotentMethods();
+            var nclientFactoryBuilder = NClientGallery.NativeClientFactories
+                .GetCustom()
+                .For(factoryName: Guid.NewGuid().ToString())
+                .UsingSystemHttpClient(httpClientFactory, httpClientName)
+                .UsingSystemJsonSerializer()
+                .WithIdempotentResilience();
+            
             if (resiliencePolicy is not null)
-                nclientFactoryBuilder.WithResiliencePolicy(resiliencePolicy);
+                nclientFactoryBuilder.WithForcePollyResilience(resiliencePolicy);
             if (loggerFactory is not null)
                 nclientFactoryBuilder.WithLogging(loggerFactory);
             

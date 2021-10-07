@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NClient" Version="0.7.0-beta.1" />
+        <PackageReference Include="NClient" Version="0.10.0-alpha.2" />
     </ItemGroup>
 
 </Project>

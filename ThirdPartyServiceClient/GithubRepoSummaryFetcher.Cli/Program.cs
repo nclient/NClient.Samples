@@ -14,11 +14,11 @@ namespace GithubRepoSummaryFetcher.Cli
 
         static Program()
         {
-            GithubRepositoryClient = NClientProvider
-                .Use<IGithubRepositoryClient>(host: "https://api.github.com")
-                .WithResiliencePolicy(
-                    retryCount: 2,
-                    resultPredicate: x => !x.HttpResponse.IsSuccessful && x.HttpResponse.StatusCode != HttpStatusCode.NotFound)
+            GithubRepositoryClient = NClientGallery.NativeClients
+                .GetBasic()
+                .For<IGithubRepositoryClient>(host: "https://api.github.com")
+                .WithIdempotentResilience(
+                    shouldRetry: x => !x.Response.IsSuccessStatusCode && x.Response.StatusCode != HttpStatusCode.NotFound)
                 .Build();
         }
         
@@ -42,11 +42,11 @@ namespace GithubRepoSummaryFetcher.Cli
         {
             var userRepositoriesResponse = await GithubRepositoryClient.GetUserRepositoriesAsync(accountName);
             if (userRepositoriesResponse.IsSuccessful)
-                return userRepositoriesResponse.Value!;
+                return userRepositoriesResponse.Data!;
 
             var orgRepositoriesResponse = await GithubRepositoryClient.GetOrgRepositoriesAsync(accountName);
             if (orgRepositoriesResponse.IsSuccessful)
-                return userRepositoriesResponse.Value!;
+                return orgRepositoriesResponse.Data!;
 
             if (userRepositoriesResponse.StatusCode == HttpStatusCode.NotFound && orgRepositoriesResponse.StatusCode == HttpStatusCode.NotFound)
                 throw new Exception("Account not found.");

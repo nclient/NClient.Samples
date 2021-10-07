@@ -18,7 +18,7 @@ namespace WeatherForecasting.Consumer
             var weatherForecastClient = weatherForecastClientFactory.Create();
 
             var weatherForecasts = await weatherForecastClient.AsHttp().GetHttpResponse(x => x.GetAsync());
-            foreach (var weatherForecast in weatherForecasts.Value!)
+            foreach (var weatherForecast in weatherForecasts.Data!)
             {
                 Console.WriteLine($"{weatherForecast.Date}: {weatherForecast.Summary}, {weatherForecast.TemperatureC} ℃");
             }
