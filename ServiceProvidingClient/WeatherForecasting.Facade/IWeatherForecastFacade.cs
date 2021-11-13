@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 using WeatherForecasting.Facade.Models;
 
 namespace WeatherForecasting.Facade
 {
-    [Api]
-    [Path("[controller]")]
+    [HttpFacade, Path("[controller]")]
     public interface IWeatherForecastFacade
     {
         [GetMethod]

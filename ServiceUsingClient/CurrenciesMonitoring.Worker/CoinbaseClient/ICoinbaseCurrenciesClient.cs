@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CurrenciesMonitoring.Worker.CoinbaseClient.Models;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 
 namespace CurrenciesMonitoring.Worker.CoinbaseClient
 {

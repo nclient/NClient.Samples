@@ -20,6 +20,7 @@ namespace WeatherForecasting.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddNClientControllers();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "WeatherForecasting.Service", Version = "v1"});

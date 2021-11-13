@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using GithubRepoSummaryFetcher.Cli.GithubClient;
 using GithubRepoSummaryFetcher.Cli.GithubClient.Models;
 using NClient;
+using NClient.Providers.Transport;
 
 namespace GithubRepoSummaryFetcher.Cli
 {
@@ -14,11 +16,13 @@ namespace GithubRepoSummaryFetcher.Cli
 
         static Program()
         {
-            GithubRepositoryClient = NClientProvider
-                .Use<IGithubRepositoryClient>(host: "https://api.github.com")
-                .WithResiliencePolicy(
-                    retryCount: 2,
-                    resultPredicate: x => !x.HttpResponse.IsSuccessful && x.HttpResponse.StatusCode != HttpStatusCode.NotFound)
+            bool IsSuccess(IResponseContext<HttpRequestMessage, HttpResponseMessage> context) => 
+                context.Response.IsSuccessStatusCode || context.Response.StatusCode == HttpStatusCode.NotFound;
+            
+            GithubRepositoryClient = NClientGallery.Clients.GetRest()
+                .For<IGithubRepositoryClient>(host: "https://api.github.com")
+                .WithResponseValidation(IsSuccess, onFailure: _ => { })
+                .WithIdempotentResilience(shouldRetry: context => !IsSuccess(context))
                 .Build();
         }
         
@@ -42,11 +46,11 @@ namespace GithubRepoSummaryFetcher.Cli
         {
             var userRepositoriesResponse = await GithubRepositoryClient.GetUserRepositoriesAsync(accountName);
             if (userRepositoriesResponse.IsSuccessful)
-                return userRepositoriesResponse.Value!;
+                return userRepositoriesResponse.Data!;
 
             var orgRepositoriesResponse = await GithubRepositoryClient.GetOrgRepositoriesAsync(accountName);
             if (orgRepositoriesResponse.IsSuccessful)
-                return userRepositoriesResponse.Value!;
+                return orgRepositoriesResponse.Data!;
 
             if (userRepositoriesResponse.StatusCode == HttpStatusCode.NotFound && orgRepositoriesResponse.StatusCode == HttpStatusCode.NotFound)
                 throw new Exception("Account not found.");
