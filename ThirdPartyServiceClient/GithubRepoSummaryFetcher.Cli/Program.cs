@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using GithubRepoSummaryFetcher.Cli.GithubClient;
 using GithubRepoSummaryFetcher.Cli.GithubClient.Models;
 using NClient;
+using NClient.Providers.Transport;
 
 namespace GithubRepoSummaryFetcher.Cli
 {
@@ -14,11 +16,13 @@ namespace GithubRepoSummaryFetcher.Cli
 
         static Program()
         {
-            GithubRepositoryClient = NClientGallery.NativeClients
-                .GetBasic()
+            bool IsSuccess(IResponseContext<HttpRequestMessage, HttpResponseMessage> context) => 
+                context.Response.IsSuccessStatusCode || context.Response.StatusCode == HttpStatusCode.NotFound;
+            
+            GithubRepositoryClient = NClientGallery.Clients.GetRest()
                 .For<IGithubRepositoryClient>(host: "https://api.github.com")
-                .WithIdempotentResilience(
-                    shouldRetry: x => !x.Response.IsSuccessStatusCode && x.Response.StatusCode != HttpStatusCode.NotFound)
+                .WithResponseValidation(IsSuccess, onFailure: _ => { })
+                .WithIdempotentResilience(shouldRetry: context => !IsSuccess(context))
                 .Build();
         }
         

@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient;
 using WeatherForecasting.Client;
 
 namespace WeatherForecasting.Consumer
@@ -17,7 +16,7 @@ namespace WeatherForecasting.Consumer
             var weatherForecastClientFactory = serviceProvider.GetRequiredService<IWeatherForecastClientFactory>();
             var weatherForecastClient = weatherForecastClientFactory.Create();
 
-            var weatherForecasts = await weatherForecastClient.AsHttp().GetHttpResponse(x => x.GetAsync());
+            var weatherForecasts = await weatherForecastClient.GetAsync();
             foreach (var weatherForecast in weatherForecasts.Data!)
             {
                 Console.WriteLine($"{weatherForecast.Date}: {weatherForecast.Summary}, {weatherForecast.TemperatureC} ℃");

@@ -1,6 +1,7 @@
 using CurrenciesMonitoring.Worker.CoinbaseClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NClient;
 using NClient.Extensions.DependencyInjection;
 
@@ -25,8 +26,9 @@ namespace CurrenciesMonitoring.Worker
                     services
                         .AddNClient<ICoinbaseCurrenciesClient>(
                             host: "https://api.coinbase.com",
-                            implementationFactory: x => x
-                                .WithForceResilience(maxRetries: 2)
+                            implementationFactory: (x, builder) => builder
+                                .WithFullResilience()
+                                .WithLogging(x.GetRequiredService<ILogger<ICoinbaseCurrenciesClient>>())
                                 .Build());
                 });
         }
